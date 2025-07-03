@@ -1,0 +1,12 @@
+
+---
+
+### 🐍 `src/log_parser.py`
+```python
+import json
+
+def parse_line(line: str) -> dict:
+    try:
+        return json.loads(line)
+    except json.JSONDecodeError:
+        return {"message": line.strip()}
