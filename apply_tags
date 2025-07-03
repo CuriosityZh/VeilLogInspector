@@ -1,0 +1,9 @@
+import re
+
+def apply_tags(entry: dict, rules: list) -> list:
+    tags = []
+    text = entry.get("message", "")
+    for rule in rules:
+        if re.search(rule["pattern"], text):
+            tags.append(rule["tag"])
+    return tags
