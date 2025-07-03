@@ -1,0 +1,28 @@
+import time
+import sys
+from log_parser import parse_line
+from tag_applier import apply_tags
+from rule_loader import load_rules
+
+def follow_file(filepath):
+    with open(filepath, "r") as f:
+        f.seek(0, 2)
+        while True:
+            line = f.readline()
+            if not line:
+                time.sleep(0.1)
+                continue
+            yield line
+
+if __name__ == "__main__":
+    if len(sys.argv) < 3:
+        print("Usage: python stream_watcher.py <logfile> <rules.yaml>")
+        sys.exit(1)
+
+    logfile, rules_path = sys.argv[1], sys.argv[2]
+    rules = load_rules(rules_path)
+
+    for line in follow_file(logfile):
+        entry = parse_line(line)
+        tags = apply_tags(entry, rules)
+        print(f"{entry['message']} {' '.join([f'[{t}]' for t in tags])}")
